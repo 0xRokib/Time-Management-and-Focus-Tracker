@@ -1,7 +1,7 @@
 import { RequestHandler, Router } from "express";
 import { authMiddleware } from "../../middlewares/authMiddleware";
 import { rateLimiter } from "../../middlewares/rateLimitMiddleware";
-import { getFocusMetricsHandler } from "./metricsComntroller";
+import { getFocusMetricsHandler } from "./metrics.controller";
 
 const metricsRouter = Router();
 

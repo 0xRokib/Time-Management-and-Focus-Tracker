@@ -4,7 +4,8 @@ import express from "express";
 import morgan from "morgan";
 import authRouter from "./modules/auth/auth.route";
 import focusRouter from "./modules/focus/focus.route";
-import metricsRouter from "./modules/metrics/metricsRoutes";
+
+import metricsRouter from "./modules/metrics/metrics.route";
 import streakRouter from "./modules/streak/streak.route";
 
 dotenv.config();
