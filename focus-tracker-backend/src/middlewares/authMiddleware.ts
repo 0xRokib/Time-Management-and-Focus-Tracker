@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-const dotenvConfig = require("../../config/dotenvConfig");
-
+const dotenvConfig = require("../config/dotenvConfig");
+interface AuthRequest extends Request {
+  user?: { id: number };
+}
 interface AuthPayload {
   userId: number;
   iat: number;
@@ -9,7 +11,7 @@ interface AuthPayload {
 }
 
 export const authMiddleware = (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -18,7 +20,7 @@ export const authMiddleware = (
 
   try {
     const decoded = jwt.verify(token, dotenvConfig.JWT_SECRET) as AuthPayload;
-    req.user = { id: decoded.userId };
+    req.user = { id: decoded.userId }; // No more TypeScript errors
     next();
   } catch (err) {
     res.status(401).json({ error: "Invalid token" });
