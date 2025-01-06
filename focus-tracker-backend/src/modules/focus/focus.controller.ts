@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { findUserById } from "../../utils/findUserUtils";
+import logger from "../../utils/logger";
 import { logFocusSession } from "./focus.service";
 
 export const logFocusSessionHandler = async (req: Request, res: Response) => {
@@ -16,8 +17,10 @@ export const logFocusSessionHandler = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(400).json({ error: "Invalid user ID" });
     }
-
     const focusSession = await logFocusSession(userId, duration);
+
+    logger.info(`Focus session logged for user ${userId}: ${duration} minutes`);
+
     res.status(201).json({
       message: "Focus session logged successfully",
       data: focusSession,

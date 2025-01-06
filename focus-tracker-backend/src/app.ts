@@ -7,6 +7,8 @@ import focusRouter from "./modules/focus/focus.route";
 
 import metricsRouter from "./modules/metrics/metrics.route";
 import streakRouter from "./modules/streak/streak.route";
+import { errorHandler } from "./utils/errorHandler";
+import httpLogger from "./utils/httpLogger";
 
 dotenv.config();
 
@@ -15,10 +17,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(httpLogger);
 
 app.use("/api/auth", authRouter);
 app.use("/api/focus", focusRouter);
 app.use("/api/metrics", metricsRouter);
 app.use("/api/streaks", streakRouter);
+
+app.use(errorHandler);
 
 export default app;
