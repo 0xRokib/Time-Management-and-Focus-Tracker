@@ -1,30 +1,26 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-const dotenvConfig = require("../config/dotenvConfig");
-interface User {
-  id: number;
-}
-interface RequestWithUser extends Request {
-  user?: User;
+const dotenvConfig = require("../../config/dotenvConfig");
+
+interface AuthPayload {
+  userId: number;
+  iat: number;
+  exp: number;
 }
 
-const authMiddleware = (
-  req: RequestWithUser,
+export const authMiddleware = (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ error: "Unauthorized" });
 
-  if (!token) {
-    return res.status(401).json({ message: "Authorization token is required" });
-  }
   try {
-    const decoded = jwt.verify(token, dotenvConfig.JWT_SECRET) as User;
-    req.user = decoded;
+    const decoded = jwt.verify(token, dotenvConfig.JWT_SECRET) as AuthPayload;
+    req.user = { id: decoded.userId };
     next();
-  } catch (error) {
-    res.status(401).json({ message: "Invalid or expired token" });
+  } catch (err) {
+    res.status(401).json({ error: "Invalid token" });
   }
 };
-
-export default authMiddleware;

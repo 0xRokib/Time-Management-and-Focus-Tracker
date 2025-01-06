@@ -1,34 +1,22 @@
-import { NextFunction, Request, Response } from "express";
-import { loginService, registerService } from "./auth.service";
-import { LoginPayload, RegisterPayload } from "./auth.types";
+import { Request, Response } from "express";
+import { login, register } from "./auth.service";
 
-export const registerController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, password }: RegisterPayload = req.body;
-    const user = await registerService(name, email, password);
-    res.status(201).json(user);
-  } catch (error: any) {
-    if (error.message === "Email is already registered") {
-      res.status(400).json({ error: error.message });
-    } else {
-      next(error);
-    }
+    const { name, email, password } = req.body;
+    const token = await register(name, email, password);
+    res.status(201).json({ message: "User registered successfully", token });
+  } catch (err) {
+    res.status(400).json({ error: (err as Error).message });
   }
 };
-export const loginController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+
+export const loginUser = async (req: Request, res: Response) => {
   try {
-    const { email, password }: LoginPayload = req.body;
-    const token = await loginService(email, password);
-    res.status(201).json({ token });
-  } catch (error) {
-    next(error);
+    const { email, password } = req.body;
+    const token = await login(email, password);
+    res.status(200).json({ message: "Login successful", token });
+  } catch (err) {
+    res.status(400).json({ error: (err as Error).message });
   }
 };

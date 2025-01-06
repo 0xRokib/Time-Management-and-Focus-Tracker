@@ -1,32 +1,35 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { findUserByEmail, registerUser } from "./auth.model";
+import { createUser, findUserByEmail } from "./auth.model";
 const dotenvConfig = require("../../config/dotenvConfig");
 
-export const registerService = async (
+export const register = async (
   name: string,
   email: string,
   password: string
-) => {
+): Promise<string> => {
   const existingUser = await findUserByEmail(email);
-  if (existingUser) {
-    throw new Error("Email is already registered");
-  }
+  if (existingUser) throw new Error("User already exists");
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  return registerUser(name, email, hashedPassword);
+  const newUser = await createUser(name, email, hashedPassword);
+
+  return generateToken(newUser.id);
 };
 
-export const loginService = async (email: string, password: string) => {
+export const login = async (
+  email: string,
+  password: string
+): Promise<string> => {
   const user = await findUserByEmail(email);
-  if (!user) {
-    throw new Error("User not found");
-  }
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    throw new Error("Invalid password");
-  }
-  return jwt.sign({ id: user.id }, dotenvConfig.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  if (!user) throw new Error("Invalid credentials");
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) throw new Error("Invalid credentials");
+
+  return generateToken(user.id);
+};
+
+const generateToken = (userId: number): string => {
+  return jwt.sign({ userId }, dotenvConfig.JWT_SECRET, { expiresIn: "1h" });
 };

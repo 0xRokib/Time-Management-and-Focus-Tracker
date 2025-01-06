@@ -1,13 +1,11 @@
 import { createClient } from "redis";
-const dotenvConfig = require("./config/dotenvConfig");
-const redisClient = createClient({
-  url: dotenvConfig.REDIS_CONFIG.url,
-});
 
-redisClient.on("error", (err) => console.error("Redis Error:", err));
+const client = createClient();
+
+client.on("error", (err) => console.error("Redis Client Error", err));
 
 (async () => {
-  await redisClient.connect();
+  await client.connect();
 })();
 
-export default redisClient;
+export default client;
