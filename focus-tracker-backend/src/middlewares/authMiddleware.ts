@@ -20,7 +20,7 @@ export const authMiddleware = (
 
   try {
     const decoded = jwt.verify(token, dotenvConfig.JWT_SECRET) as AuthPayload;
-    req.user = { id: decoded.userId }; // No more TypeScript errors
+    req.user = { id: decoded.userId };
     next();
   } catch (err) {
     res.status(401).json({ error: "Invalid token" });
