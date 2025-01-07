@@ -33,9 +33,11 @@ export default function RootLayout({
       >
         <div className="flex h-screen">
           <Sidebar />
-          <main className="flex-1 p-8 ml-64 bg-[#111827] text-[#A1A1AA] overflow-auto">
+
+          <main className="flex-1 p-8 md:ml-64 bg-[#111827] text-[#A1A1AA] overflow-auto">
             {children}
           </main>
+
           <Toaster />
         </div>
       </body>
