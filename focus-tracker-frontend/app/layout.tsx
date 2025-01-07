@@ -1,6 +1,7 @@
 import { Sidebar } from "@/components/Sidebar";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -35,6 +36,7 @@ export default function RootLayout({
           <main className="flex-1 p-8 ml-64 bg-[#111827] text-[#A1A1AA] overflow-auto">
             {children}
           </main>
+          <Toaster />
         </div>
       </body>
     </html>
