@@ -20,6 +20,7 @@ type AuthContextType = {
   user: UserType | null;
   login: (userData: UserType) => void;
   logout: () => void;
+  loading: boolean; // Add loading state to context
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,14 +28,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
+  const [loading, setLoading] = useState(true); // Track loading state
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
     // const token = localStorage.getItem("token");
-    const token = "asdasdasd";
-
-    // Only redirect if the user is trying to access a protected page
+    const token = "";
     if (
       !token &&
       !pathname.startsWith("/login") &&
@@ -52,11 +52,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsAuthenticated(false);
       setUser(null);
     }
+    setLoading(false); // Set loading to false once the authentication check is complete
   }, [pathname, router]);
 
   useEffect(() => {
     if (isAuthenticated) {
-      // If the user is authenticated, redirect to home
       router.push("/");
     }
   }, [isAuthenticated, router]);
@@ -75,7 +75,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, user, login, logout, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

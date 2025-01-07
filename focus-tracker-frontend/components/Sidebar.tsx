@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/app/context/AuthContext";
 import { cn } from "@/lib/utils";
 import { BarChart2, Clock, Trophy, User } from "lucide-react";
 import Link from "next/link";
@@ -25,6 +26,7 @@ const routes = [
 ];
 
 export function Sidebar() {
+  const { isAuthenticated } = useAuth(); // Access authentication state from context
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -32,9 +34,26 @@ export function Sidebar() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Check if the user is on the login or registration page
+  const isAuthPage = pathname === "/login" || pathname === "/registration";
+
+  // Conditionally hide sidebar if not authenticated or on login/registration page
+  const sidebarClasses = cn(
+    "fixed top-0 left-0 h-full bg-[#181E2A] text-[#E5E7EB] shadow-xl z-40 transform transition-transform duration-300",
+    {
+      "translate-x-0": isSidebarOpen && isAuthenticated, // Show sidebar if open and authenticated
+      "-translate-x-full": !isAuthenticated || isAuthPage || !isSidebarOpen, // Hide sidebar when not authenticated or on login/registration page
+    }
+  );
+
   return (
-    <div>
-      <div className="hidden md:flex h-screen w-64 flex-col fixed left-0 top-0 bg-[#181E2A] text-[#E5E7EB] shadow-xl">
+    <>
+      {/* Sidebar for Desktop */}
+      <div
+        className={`hidden md:flex h-screen w-64 flex-col fixed left-0 top-0 bg-[#181E2A] text-[#E5E7EB] shadow-xl ${
+          !isAuthenticated || isAuthPage ? "hidden" : ""
+        }`}
+      >
         <div className="p-6 border-b border-[#232B3A]">
           <h1 className="text-2xl font-bold tracking-tight text-[#16C784]">
             Focus Tracker
@@ -80,6 +99,8 @@ export function Sidebar() {
           </div>
         </div>
       </div>
+
+      {/* Sidebar Toggle Button for Mobile */}
       <div className="md:hidden fixed top-6 right-6 z-50">
         <button
           onClick={toggleSidebar}
@@ -110,11 +131,9 @@ export function Sidebar() {
           </svg>
         </button>
       </div>
-      <div
-        className={`fixed top-0 left-0 w-64 h-full bg-[#181E2A] text-[#E5E7EB] shadow-xl z-40 transform transition-transform duration-300 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
+
+      {/* Sidebar for Mobile */}
+      <div className={sidebarClasses}>
         <div className="p-6 border-b border-[#232B3A]">
           <h1 className="text-2xl font-bold tracking-tight text-[#16C784]">
             Focus Tracker
@@ -159,6 +178,6 @@ export function Sidebar() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
