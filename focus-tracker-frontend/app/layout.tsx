@@ -1,16 +1,13 @@
 "use client";
 import { Sidebar } from "@/components/Sidebar";
 import { useMetadata } from "@/hooks/useMetadata";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; // Import React Query
-
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import "./globals.css";
 
-// Create the QueryClient instance
 const queryClient = new QueryClient();
 
 export default function RootLayout({
@@ -42,10 +39,9 @@ export default function RootLayout({
 }
 
 function Content({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, loading } = useAuth(); // Access loading state from AuthContext
+  const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  console.log(pathname, router);
 
   useEffect(() => {
     if (
@@ -57,31 +53,23 @@ function Content({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, pathname, router]);
 
-  // If loading, show loading screen
   if (loading) {
     return <div className="loading-screen">Loading...</div>;
   }
 
-  // If not authenticated and not on login/registration pages, prevent rendering of the sidebar or main content
-  if (
-    !isAuthenticated &&
-    pathname !== "/login" &&
-    pathname !== "/registration"
-  ) {
-    return null; // Prevent rendering of any content, including Sidebar and main content
+  // Render only login or registration pages if unauthenticated
+  // Render only login or registration pages if unauthenticated
+  if (!isAuthenticated) {
+    if (pathname === "/login" || pathname === "/registration") {
+      return <main className="">{children}</main>;
+    }
+    return null; // Prevent rendering anything else
   }
-
+  // Render authenticated content
   return (
-    <div
-      className={`flex h-screen ${!isAuthenticated ? "justify-center" : ""}`}
-    >
-      {/* Render Sidebar only if authenticated */}
-      {isAuthenticated && <Sidebar />}
-      <main
-        className={`flex-1 p-8 md:ml-64 bg-[#111827] text-[#A1A1AA] overflow-auto ${
-          !isAuthenticated ? "w-full" : ""
-        }`}
-      >
+    <div className="flex h-screen">
+      <Sidebar />
+      <main className="flex-1 p-8 md:ml-64 bg-[#101317] text-[#A1A1AA] overflow-auto ">
         {children}
       </main>
       <Toaster />

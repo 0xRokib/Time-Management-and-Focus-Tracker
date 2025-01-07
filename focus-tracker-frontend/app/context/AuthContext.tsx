@@ -20,7 +20,7 @@ type AuthContextType = {
   user: UserType | null;
   login: (userData: UserType) => void;
   logout: () => void;
-  loading: boolean; // Add loading state to context
+  loading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,7 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
 

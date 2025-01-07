@@ -39,7 +39,7 @@ export function Sidebar() {
 
   // Conditionally hide sidebar if not authenticated or on login/registration page
   const sidebarClasses = cn(
-    "fixed top-0 left-0 h-full bg-[#181E2A] text-[#E5E7EB] shadow-xl z-40 transform transition-transform duration-300",
+    "fixed top-0 left-0 h-full bg-[#161B22] text-[#E5E7EB] shadow-xl z-40 transform transition-transform duration-300",
     {
       "translate-x-0": isSidebarOpen && isAuthenticated, // Show sidebar if open and authenticated
       "-translate-x-full": !isAuthenticated || isAuthPage || !isSidebarOpen, // Hide sidebar when not authenticated or on login/registration page
@@ -50,7 +50,7 @@ export function Sidebar() {
     <>
       {/* Sidebar for Desktop */}
       <div
-        className={`hidden md:flex h-screen w-64 flex-col fixed left-0 top-0 bg-[#181E2A] text-[#E5E7EB] shadow-xl ${
+        className={`hidden md:flex h-screen w-64 flex-col fixed left-0 top-0 bg-[#161B22] text-[#E5E7EB] shadow-xl ${
           !isAuthenticated || isAuthPage ? "hidden" : ""
         }`}
       >

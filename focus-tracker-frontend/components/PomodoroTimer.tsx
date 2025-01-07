@@ -92,8 +92,8 @@ export function PomodoroTimer() {
     : Math.min(((FOCUS_TIME - time) / FOCUS_TIME) * 100, 100);
 
   return (
-    <Card className="bg-gradient-to-b from-[#1E293B] to-[#111827] text-[#E5E7EB] border-none  rounded-2xl overflow-hidden">
-      <CardContent className="p-10">
+    <Card className="bg-[#101317] text-[#E5E7EB] border-2 border-[#232B3A]  rounded-2xl overflow-hidden ">
+      <CardContent className="p-10 ">
         <div className="flex flex-col items-center space-y-6">
           <div className="w-full flex justify-between items-center mb-4">
             <div className="text-sm font-medium text-[#16C784]">
