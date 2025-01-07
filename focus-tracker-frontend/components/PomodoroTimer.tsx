@@ -40,25 +40,23 @@ export function PomodoroTimer() {
       }, 1000);
     } else if (time === 0) {
       if (isSoundEnabled) {
-        // Play the correct sound based on the session type (Focus or Break)
         if (!isBreak && audioRef.current) {
-          audioRef.current.play(); // Play Focus sound
+          audioRef.current.play();
         } else if (isBreak && breakAudioRef.current) {
-          breakAudioRef.current.play(); // Play Break sound
+          breakAudioRef.current.play();
         }
       }
 
       if (!isBreak) {
         setSessionCount((prevCount) => prevCount + 1);
         setIsBreak(true);
-        setTime(BREAK_TIME); // Switch to break after focus session
+        setTime(BREAK_TIME);
         toast.success("Focus session completed! Time for a break.");
       } else {
-        resetTimer(); // Reset timer after break session
+        resetTimer();
         toast.success("Break completed! Ready for another focus session?");
       }
     }
-
     return () => {
       if (interval) clearInterval(interval);
     };
@@ -90,8 +88,8 @@ export function PomodoroTimer() {
 
   // Calculate progress, and reset to 0 when the session completes
   const progress = isBreak
-    ? Math.min(((BREAK_TIME - time) / BREAK_TIME) * 100, 100) // Break progress
-    : Math.min(((FOCUS_TIME - time) / FOCUS_TIME) * 100, 100); // Focus progress
+    ? Math.min(((BREAK_TIME - time) / BREAK_TIME) * 100, 100)
+    : Math.min(((FOCUS_TIME - time) / FOCUS_TIME) * 100, 100);
 
   return (
     <Card className="bg-gradient-to-b from-[#1E293B] to-[#111827] text-[#E5E7EB] border-none  rounded-2xl overflow-hidden">
@@ -142,7 +140,6 @@ export function PomodoroTimer() {
           </div>
 
           <div className="w-full max-w-md mb-8">
-            {/* Progress Bar Animation */}
             <motion.div className="relative bg-[#374151] rounded-full h-3 w-full overflow-hidden">
               <motion.div
                 className="absolute top-0 left-0 h-3 bg-[#16C784] rounded-full"

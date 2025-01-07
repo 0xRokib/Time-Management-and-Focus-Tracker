@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { BarChart2, Clock, Trophy, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react"; // Import useState for handling the sidebar visibility on mobile
+import { useState } from "react";
 
 const routes = [
   {
@@ -26,24 +26,21 @@ const routes = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to control sidebar visibility on mobile
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar visibility
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   return (
     <div>
-      {/* Sidebar for larger screens */}
       <div className="hidden md:flex h-screen w-64 flex-col fixed left-0 top-0 bg-[#181E2A] text-[#E5E7EB] shadow-xl">
-        {/* Header */}
         <div className="p-6 border-b border-[#232B3A]">
           <h1 className="text-2xl font-bold tracking-tight text-[#16C784]">
             Focus Tracker
           </h1>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 px-3 py-4 space-y-2">
           {routes.map((route) => (
             <Link
@@ -68,8 +65,6 @@ export function Sidebar() {
             </Link>
           ))}
         </nav>
-
-        {/* Profile Section */}
         <div className="p-6 border-t border-[#232B3A] mt-auto">
           <div className="flex items-center gap-x-4">
             <User className="w-8 h-8 text-[#16C784]" />
@@ -85,8 +80,6 @@ export function Sidebar() {
           </div>
         </div>
       </div>
-
-      {/* Hamburger Menu for Mobile */}
       <div className="md:hidden fixed top-6 right-6 z-50">
         <button
           onClick={toggleSidebar}
@@ -117,21 +110,16 @@ export function Sidebar() {
           </svg>
         </button>
       </div>
-
-      {/* Sidebar for mobile */}
       <div
         className={`fixed top-0 left-0 w-64 h-full bg-[#181E2A] text-[#E5E7EB] shadow-xl z-40 transform transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Header */}
         <div className="p-6 border-b border-[#232B3A]">
           <h1 className="text-2xl font-bold tracking-tight text-[#16C784]">
             Focus Tracker
           </h1>
         </div>
-
-        {/* Navigation */}
         <nav className="flex-1 px-3 py-4 space-y-2">
           {routes.map((route) => (
             <Link
@@ -156,8 +144,6 @@ export function Sidebar() {
             </Link>
           ))}
         </nav>
-
-        {/* Profile Section */}
         <div className="p-6 border-t border-[#232B3A] mt-auto">
           <div className="flex items-center gap-x-4">
             <User className="w-8 h-8 text-[#16C784]" />
