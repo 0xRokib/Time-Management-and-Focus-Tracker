@@ -1,3 +1,4 @@
+import { Sidebar } from "@/components/Sidebar";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -27,11 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#1F2937] text-[#FFFFFF]`}
       >
-        <div className="flex">
-          <h1>Sidebar</h1>
-          <main className="flex-1 p-8 ml-64">{children}</main>
+        <div className="flex h-screen">
+          <Sidebar />
+          <main className="flex-1 p-8 ml-64 bg-[#111827] text-[#A1A1AA] overflow-auto">
+            {children}
+          </main>
         </div>
       </body>
     </html>
