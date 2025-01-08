@@ -1,14 +1,20 @@
 "use client";
 import { Sidebar } from "@/components/Sidebar";
 import { useMetadata } from "@/hooks/useMetadata";
+import { Poppins } from "@next/font/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import "./globals.css";
-
 const queryClient = new QueryClient();
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-poppins",
+});
 
 export default function RootLayout({
   children,
@@ -27,7 +33,7 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body className="antialiased bg-[#1F2937] text-[#FFFFFF]">
+      <body className={poppins.className}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <Content>{children}</Content>
@@ -56,16 +62,13 @@ function Content({ children }: { children: React.ReactNode }) {
   if (loading) {
     return <div className="loading-screen">Loading...</div>;
   }
-
-  // Render only login or registration pages if unauthenticated
-  // Render only login or registration pages if unauthenticated
   if (!isAuthenticated) {
     if (pathname === "/login" || pathname === "/registration") {
       return <main className="">{children}</main>;
     }
-    return null; // Prevent rendering anything else
+    return null;
   }
-  // Render authenticated content
+
   return (
     <div className="flex h-screen">
       <Sidebar />

@@ -33,8 +33,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // const token = localStorage.getItem("token");
-    const token = "";
+    const token = localStorage.getItem("token");
+
     if (
       !token &&
       !pathname.startsWith("/login") &&
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else if (token) {
       setIsAuthenticated(true);
       setUser({
-        name: "Stored Name",
+        name: "Stored Name", // Replace with actual data if necessary
         email: "stored@example.com",
         token,
       });
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsAuthenticated(false);
       setUser(null);
     }
-    setLoading(false); // Set loading to false once the authentication check is complete
+    setLoading(false);
   }, [pathname, router]);
 
   useEffect(() => {
