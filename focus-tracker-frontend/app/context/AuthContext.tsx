@@ -10,6 +10,7 @@ import {
 } from "react";
 
 type UserType = {
+  userId: number;
   name: string;
   email: string;
   token: string;
@@ -47,14 +48,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [pathname]);
 
   useEffect(() => {
-    if (!loading) {
-      if (isAuthenticated) {
-        router.push("/");
-      } else if (pathname !== "/login") {
-        router.push("/login");
-      }
+    if (isAuthenticated) {
+      router.push("/");
     }
-  }, [isAuthenticated, loading, pathname, router]);
+  }, [isAuthenticated, router]);
 
   const logout = () => {
     setIsAuthenticated(false);

@@ -45,7 +45,9 @@ export default function RegisterPage() {
           }, 1000);
         },
         onError: () => {
-          setErrorMessage("Registration failed. Please Enter valid input Only!");
+          setErrorMessage(
+            "Registration failed. Please Enter valid input Only!"
+          );
         },
       });
     } catch {

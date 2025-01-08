@@ -1,17 +1,19 @@
 "use client";
 
+import { useAuth } from "@/app/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { usePostData } from "@/hooks/useApi";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-const FOCUS_TIME = 1 * 60;
-const BREAK_TIME = 1 * 60;
+const FOCUS_TIME = 1; // Focus session duration in minutes
+const BREAK_TIME = 5; // Break session duration in minutes
 
 export function PomodoroTimer() {
-  const [time, setTime] = useState(FOCUS_TIME);
+  const [time, setTime] = useState(FOCUS_TIME * 60); // Converting minutes to seconds
   const [isActive, setIsActive] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
   const [sessionCount, setSessionCount] = useState(0);
@@ -20,10 +22,15 @@ export function PomodoroTimer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const breakAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  const { user } = useAuth();
+  const { mutateAsync: logFocusSession } = usePostData(
+    "/api/focus/focus-session"
+  );
+
   const resetTimer = useCallback(() => {
     setIsActive(false);
     setIsBreak(false);
-    setTime(FOCUS_TIME);
+    setTime(FOCUS_TIME * 60);
   }, []);
 
   useEffect(() => {
@@ -50,21 +57,36 @@ export function PomodoroTimer() {
       if (!isBreak) {
         setSessionCount((prevCount) => prevCount + 1);
         setIsBreak(true);
-        setTime(BREAK_TIME);
+        setTime(BREAK_TIME * 60);
         toast.success("Focus session completed! Time for a break.");
+        if (user) {
+          logFocusSession({
+            userId: user.userId,
+            duration: FOCUS_TIME,
+          });
+        }
       } else {
         resetTimer();
         toast.success("Break completed! Ready for another focus session?");
       }
     }
+
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isActive, time, isBreak, resetTimer, isSoundEnabled]);
+  }, [
+    isActive,
+    time,
+    isBreak,
+    resetTimer,
+    isSoundEnabled,
+    logFocusSession,
+    user,
+  ]);
 
   const toggleTimer = () => {
     setIsActive(!isActive);
-    if (!isActive && time === FOCUS_TIME) {
+    if (!isActive && time === FOCUS_TIME * 60) {
       toast.info("Focus session started. You can do this! 💪");
     }
   };
@@ -88,8 +110,8 @@ export function PomodoroTimer() {
 
   // Calculate progress, and reset to 0 when the session completes
   const progress = isBreak
-    ? Math.min(((BREAK_TIME - time) / BREAK_TIME) * 100, 100)
-    : Math.min(((FOCUS_TIME - time) / FOCUS_TIME) * 100, 100);
+    ? Math.min(((BREAK_TIME * 60 - time) / (BREAK_TIME * 60)) * 100, 100)
+    : Math.min(((FOCUS_TIME * 60 - time) / (FOCUS_TIME * 60)) * 100, 100);
 
   return (
     <Card className="bg-[#101317] text-[#E5E7EB] border-2 border-[#232B3A]  rounded-2xl overflow-hidden ">
