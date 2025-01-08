@@ -18,7 +18,6 @@ type UserType = {
 type AuthContextType = {
   isAuthenticated: boolean;
   user: UserType | null;
-  login: (userData: UserType) => void;
   logout: () => void;
   loading: boolean;
 };
@@ -34,50 +33,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
 
-    if (
-      !token &&
-      !pathname.startsWith("/login") &&
-      !pathname.startsWith("/registration")
-    ) {
-      router.push("/login");
-    } else if (token) {
+    if (token && storedUser) {
       setIsAuthenticated(true);
-      setUser({
-        name: "Stored Name", // Replace with actual data if necessary
-        email: "stored@example.com",
-        token,
-      });
+      setUser(JSON.parse(storedUser));
     } else {
       setIsAuthenticated(false);
       setUser(null);
     }
+
     setLoading(false);
-  }, [pathname, router]);
+  }, [pathname]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/");
+    if (!loading) {
+      if (isAuthenticated) {
+        router.push("/");
+      } else if (pathname !== "/login") {
+        router.push("/login");
+      }
     }
-  }, [isAuthenticated, router]);
-
-  const login = (userData: UserType) => {
-    setIsAuthenticated(true);
-    setUser(userData);
-    localStorage.setItem("token", userData.token);
-  };
+  }, [isAuthenticated, loading, pathname, router]);
 
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     router.push("/login");
   };
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, user, login, logout, loading }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, user, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

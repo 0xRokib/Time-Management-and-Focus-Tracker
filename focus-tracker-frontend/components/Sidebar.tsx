@@ -1,5 +1,3 @@
-"use client";
-
 import { useAuth } from "@/app/context/AuthContext";
 import { cn } from "@/lib/utils";
 import { BarChart2, Clock, Trophy, User } from "lucide-react";
@@ -26,7 +24,7 @@ const routes = [
 ];
 
 export function Sidebar() {
-  const { isAuthenticated } = useAuth(); // Access authentication state from context
+  const { isAuthenticated, user, logout } = useAuth();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -41,8 +39,8 @@ export function Sidebar() {
   const sidebarClasses = cn(
     "fixed top-0 left-0 h-full bg-[#161B22] text-[#E5E7EB] shadow-xl z-40 transform transition-transform duration-300",
     {
-      "translate-x-0": isSidebarOpen && isAuthenticated, // Show sidebar if open and authenticated
-      "-translate-x-full": !isAuthenticated || isAuthPage || !isSidebarOpen, // Hide sidebar when not authenticated or on login/registration page
+      "translate-x-0": isSidebarOpen && isAuthenticated,
+      "-translate-x-full": !isAuthenticated || isAuthPage || !isSidebarOpen,
     }
   );
 
@@ -88,12 +86,19 @@ export function Sidebar() {
           <div className="flex items-center gap-x-4">
             <User className="w-8 h-8 text-[#16C784]" />
             <div className="flex-1">
-              <p className="text-base font-semibold text-[#E5E7EB]">John Doe</p>
-              <p className="text-sm text-[#A1A1AA]">johndoe@example.com</p>
+              <p className="text-base font-semibold text-[#E5E7EB]">
+                {user?.name || "User Not Found!"}
+              </p>
+              <p className="text-sm text-[#A1A1AA]">
+                {user?.email || "Email Not Found!"}
+              </p>
             </div>
           </div>
           <div className="mt-4">
-            <button className="w-full py-2 text-sm font-medium text-center text-white bg-gradient-to-r from-[#16C784] to-[#2ECC71] rounded-lg hover:from-[#2ECC71] hover:to-[#28A745] shadow-md">
+            <button
+              onClick={logout}
+              className="w-full py-2 text-sm font-medium text-center text-white bg-gradient-to-r from-[#16C784] to-[#2ECC71] rounded-lg hover:from-[#2ECC71] hover:to-[#28A745] shadow-md"
+            >
               Log Out
             </button>
           </div>
@@ -167,12 +172,17 @@ export function Sidebar() {
           <div className="flex items-center gap-x-4">
             <User className="w-8 h-8 text-[#16C784]" />
             <div className="flex-1">
-              <p className="text-base font-semibold text-[#E5E7EB]">John Doe</p>
-              <p className="text-sm text-[#A1A1AA]">johndoe@example.com</p>
+              <p className="text-base font-semibold text-[#E5E7EB]">
+                {user?.name}
+              </p>
+              <p className="text-sm text-[#A1A1AA]">{user?.email}</p>
             </div>
           </div>
           <div className="mt-4">
-            <button className="w-full py-2 text-sm font-medium text-center text-white bg-gradient-to-r from-[#16C784] to-[#2ECC71] rounded-lg hover:from-[#2ECC71] hover:to-[#28A745] shadow-md">
+            <button
+              onClick={logout}
+              className="w-full py-2 text-sm font-medium text-center text-white bg-gradient-to-r from-[#16C784] to-[#2ECC71] rounded-lg hover:from-[#2ECC71] hover:to-[#28A745] shadow-md"
+            >
               Log Out
             </button>
           </div>

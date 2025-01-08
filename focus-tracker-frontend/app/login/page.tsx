@@ -17,6 +17,10 @@ interface FormData {
 interface ResponseData {
   message: string;
   token: string;
+  user: {
+    name: string;
+    email: string;
+  };
 }
 
 export default function LoginPage() {
@@ -37,15 +41,17 @@ export default function LoginPage() {
     try {
       mutate(data, {
         onSuccess: (response) => {
-          const { message, token } = response;
+          const { message, token, user } = response;
+
           toast.success(`${message}. Redirecting...`);
           localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
           setTimeout(() => {
             router.push("/");
-          }, 2000);
+          }, 1000);
         },
         onError: () => {
-          setErrorMessage("Login failed. Please try again.");
+          setErrorMessage("Login failed. Check Email and Password again!");
         },
       });
     } catch {

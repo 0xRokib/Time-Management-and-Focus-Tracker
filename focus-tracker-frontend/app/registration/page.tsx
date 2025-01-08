@@ -42,10 +42,10 @@ export default function RegisterPage() {
           toast.success(`${message}. Please login.`);
           setTimeout(() => {
             router.push("/login");
-          }, 2000);
+          }, 1000);
         },
         onError: () => {
-          setErrorMessage("Registration failed. Please try again.");
+          setErrorMessage("Registration failed. Please Enter valid input Only!");
         },
       });
     } catch {
