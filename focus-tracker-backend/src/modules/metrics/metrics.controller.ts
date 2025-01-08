@@ -16,7 +16,6 @@ export const getFocusMetricsHandler = async (req: Request, res: Response) => {
         .status(400)
         .json({ error: 'Invalid metricType. Use "day" or "week".' });
     }
-
     const metrics = await getFocusMetrics(
       parseInt(userId as string, 10),
       metricType as MetricType

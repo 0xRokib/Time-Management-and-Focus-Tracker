@@ -7,7 +7,7 @@ import {
   getWeeklyMetricsFromDB,
 } from "./metrics.model";
 
-const CACHE_EXPIRY = 60 * 60; // Cache expiry time in seconds (1 hour)
+const CACHE_EXPIRY = 60 * 60;
 
 export const getFocusMetrics = async (
   userId: number,
@@ -21,15 +21,12 @@ export const getFocusMetrics = async (
     return JSON.parse(cachedMetrics);
   }
 
-  // Fetch metrics from the database based on type
   let metrics: FocusMetric[];
   if (metricType === "day") {
     metrics = await getDailyMetricsFromDB(userId);
   } else {
     metrics = await getWeeklyMetricsFromDB(userId);
   }
-
-  // Cache the result for future requests
   await redisClient.set(cacheKey, JSON.stringify(metrics), {
     EX: CACHE_EXPIRY,
   });

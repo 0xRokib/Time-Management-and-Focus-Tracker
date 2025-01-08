@@ -1,7 +1,7 @@
 import redisClient from "../../config/redis";
 import { getFocusSessionsFromDB } from "./streak.model";
 
-const CACHE_EXPIRY = 60 * 60; // 1 hour cache expiry
+const CACHE_EXPIRY = 60 * 60;
 
 export const getStreak = async (
   userId: number
@@ -17,8 +17,6 @@ export const getStreak = async (
     console.log("Returning streak data from cache");
     return JSON.parse(cachedStreak);
   }
-
-  // Fetch all focus sessions from the database
   const focusSessions = await getFocusSessionsFromDB(userId);
 
   if (focusSessions.length === 0) {
@@ -31,22 +29,19 @@ export const getStreak = async (
   let previousSessionDate = new Date(focusSessions[0].timestamp);
   let tempCurrentStreak = 1;
 
-  // Loop through the focus sessions and calculate streaks
   for (let i = 1; i < focusSessions.length; i++) {
     const currentSessionDate = new Date(focusSessions[i].timestamp);
 
     const differenceInTime =
       currentSessionDate.getTime() - previousSessionDate.getTime();
-    const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24)); // Difference in days
+    const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
 
     if (differenceInDays === 1) {
-      tempCurrentStreak++; // Consecutive day streak
+      tempCurrentStreak++;
     } else if (differenceInDays > 1) {
-      // Reset streak if the user skipped days
       tempCurrentStreak = 1;
     }
 
-    // Track the longest streak
     if (tempCurrentStreak > longestStreak) {
       longestStreak = tempCurrentStreak;
     }
@@ -54,12 +49,10 @@ export const getStreak = async (
     previousSessionDate = currentSessionDate;
   }
 
-  currentStreak = tempCurrentStreak; // Set final current streak value
+  currentStreak = tempCurrentStreak;
 
-  // Award badge based on the longest streak
   const badge = awardBadge(longestStreak);
 
-  // Cache the streak data
   await redisClient.set(
     cacheKey,
     JSON.stringify({ currentStreak, longestStreak, badge }),
@@ -69,7 +62,6 @@ export const getStreak = async (
   return { currentStreak, longestStreak, badge };
 };
 
-// Badge award logic based on longest streak
 export const awardBadge = (streakLength: number): string | null => {
   if (streakLength >= 100) return "Gold Badge";
   if (streakLength >= 30) return "Silver Badge";

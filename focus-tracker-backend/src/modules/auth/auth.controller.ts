@@ -17,8 +17,15 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) throw new Error("Missing required fields");
-    const token = await login(email, password);
-    res.status(200).json({ message: "Login successful", token });
+    const { token, user } = await login(email, password);
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (err) {
     res.status(400).json({ error: (err as Error).message });
   }

@@ -9,7 +9,6 @@ export const logFocusSession = async (
 
   const focusSession = await logFocusSessionInDB(userId, duration);
 
-  // Invalidate cache after logging a new session
   await redisClient.del(`focus-metrics:${userId}:day`);
   await redisClient.del(`focus-metrics:${userId}:week`);
 

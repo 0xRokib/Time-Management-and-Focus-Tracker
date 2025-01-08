@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { createUser, findUserByEmail } from "./auth.model";
+import { createUser, findUserByEmail, User } from "./auth.model";
 const dotenvConfig = require("../../config/dotenvConfig");
 
 export const register = async (
@@ -20,14 +20,16 @@ export const register = async (
 export const login = async (
   email: string,
   password: string
-): Promise<string> => {
+): Promise<{ token: string; user: User }> => {
   const user = await findUserByEmail(email);
   if (!user) throw new Error("Invalid credentials");
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) throw new Error("Invalid credentials");
 
-  return generateToken(user.id);
+  const token = generateToken(user.id);
+
+  return { token, user };
 };
 
 const generateToken = (userId: number): string => {
