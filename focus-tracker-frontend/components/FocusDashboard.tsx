@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@/app/context/AuthContext";
-import { Card } from "@/components/ui/card";
 import { useGetData } from "@/hooks/useApi";
 import { motion } from "framer-motion";
 import { Clock, Flame, Target } from "lucide-react";
@@ -26,8 +25,8 @@ interface FocusMetric {
 interface FocusMetricsResponse {
   message: string;
   data: {
-    daily?: FocusMetric; // Daily data is a single object
-    weekly?: FocusMetric[]; // Weekly data is an array of objects
+    daily?: FocusMetric;
+    weekly?: FocusMetric[];
   };
 }
 
@@ -52,14 +51,34 @@ export function FocusDashboard() {
   };
 
   const getMotivationalMessage = (sessions: number) => {
-    if (sessions === 0) return "Ready to start focusing?";
-    if (sessions < 3) return "Great start! Keep going!";
-    if (sessions < 5) return "You're on fire! 🔥";
-    return "Incredible focus today! 🌟";
+    if (sessions === 0) {
+      return "Let's get started! Focus and crush it today! 💪 🚀";
+    }
+    if (sessions < 3) {
+      return "You're off to a great start! Keep that momentum going! 🔥 💥";
+    }
+    if (sessions < 5) {
+      return "You're on fire! Focus mode: ON 🔥 💪";
+    }
+    return "Incredible focus today! You're unstoppable! Keep it up! 🌟 🙌";
   };
 
   if (isDayLoading || isWeekLoading) {
-    return <Card className="glass-card animate-pulse h-[400px]" />;
+    return (
+      <motion.div
+        className="fullscreen-skeleton absolute top-0 left-0 w-full h-full bg-[#101317] flex justify-center items-center z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <motion.div
+          className="glass-card animate-pulse bg-[#232B3A] w-[80%] h-[80%] rounded-xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, repeat: Infinity, repeatType: "reverse" }}
+        />
+      </motion.div>
+    );
   }
 
   const dailyMetrics = {
@@ -96,9 +115,17 @@ export function FocusDashboard() {
     })(),
   };
 
-  // Debugging logs for checking the fetched data
-  console.log("Day Data:", dayData);
-  console.log("Week Data:", weekData);
+  const isDataEmpty = !dayData?.data?.daily || !weekData?.data?.weekly?.length;
+
+  if (isDataEmpty) {
+    return (
+      <div className="w-full h-full flex justify-center items-center text-white">
+        <h2 className="text-xl font-semibold text-gray-400">
+          No data available. Please try again later.
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="focus-dashboard-container w-full h-full text-white p-6 bg-[#101317]">
