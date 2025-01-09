@@ -34,11 +34,9 @@ export function FocusDashboard() {
   const { user } = useAuth();
   const userId = user?.userId;
 
-  // Constructing API URLs
   const dayUrl = `/api/metrics/focus-metrics?userId=${userId}&type=day`;
   const weekUrl = `/api/metrics/focus-metrics?userId=${userId}&type=week`;
 
-  // Fetching daily and weekly data
   const { data: dayData, isPending: isDayLoading } =
     useGetData<FocusMetricsResponse>(dayUrl);
   const { data: weekData, isPending: isWeekLoading } =
@@ -96,22 +94,16 @@ export function FocusDashboard() {
       0
     ),
     dailyBreakdown: (() => {
-      const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-      const filledData = daysOfWeek.map((day) => {
-        const existingData = weekData?.data?.weekly?.find(
-          (item: FocusMetric) =>
-            new Date(item.date).toLocaleDateString("en-US", {
-              weekday: "short",
-            }) === day
-        );
+      const filledData = weekData?.data?.weekly?.map((item) => ({
+        date: new Date(item.date).toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+        }),
+        dayName: item.day_name || "",
+        focusTime: item.total_duration,
+      }));
 
-        return {
-          day,
-          focusTime: existingData ? existingData.total_duration : 0, // If no data, set 0
-        };
-      });
-
-      return filledData;
+      return filledData || [];
     })(),
   };
 
@@ -129,7 +121,6 @@ export function FocusDashboard() {
 
   return (
     <div className="focus-dashboard-container w-full h-full text-white p-6 bg-[#101317]">
-      {/* Header Section */}
       <div className="header-section flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-[#16C784] flex items-center gap-2">
@@ -141,7 +132,6 @@ export function FocusDashboard() {
         </div>
       </div>
 
-      {/* Daily Metrics Section */}
       <div className="daily-metrics grid grid-cols-2 gap-4 mb-8">
         <motion.div
           className="metric-card border p-4 border-[#232B3A] bg-[#101317] rounded-xl"
@@ -178,7 +168,6 @@ export function FocusDashboard() {
         </motion.div>
       </div>
 
-      {/* Weekly Metrics Section */}
       <div className="weekly-metrics border p-6 border-[#232B3A] bg-[#101317] rounded-xl">
         <h2 className="text-lg font-medium text-[#16C784] mb-4">
           Weekly Progress
@@ -220,7 +209,6 @@ export function FocusDashboard() {
           </motion.div>
         </div>
 
-        {/* Weekly Bar Chart */}
         <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={weeklyMetrics.dailyBreakdown}>
@@ -230,7 +218,13 @@ export function FocusDashboard() {
                 vertical={false}
               />
               <XAxis
-                dataKey="day"
+                dataKey="date"
+                tickFormatter={(tick) => {
+                  const matchingDay = weeklyMetrics.dailyBreakdown.find(
+                    (item) => item.date === tick
+                  );
+                  return matchingDay ? matchingDay.dayName : tick;
+                }}
                 stroke="rgba(255,255,255,0.5)"
                 tickLine={false}
                 axisLine={false}
@@ -243,6 +237,15 @@ export function FocusDashboard() {
                 fontSize={12}
               />
               <Tooltip
+                formatter={(value, name, { payload }) => {
+                  if (payload) {
+                    return [
+                      `${value} minutes`,
+                      `Date: ${payload.date} (${payload.dayName || "N/A"})`,
+                    ];
+                  }
+                  return [value, name];
+                }}
                 contentStyle={{
                   backgroundColor: "rgba(15, 10, 31, 0.9)",
                   border: "1px solid rgba(147, 51, 234, 0.2)",

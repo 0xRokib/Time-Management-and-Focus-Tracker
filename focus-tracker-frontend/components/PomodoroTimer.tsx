@@ -4,6 +4,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePostData } from "@/hooks/useApi";
+import { useDailyMetrics } from "@/hooks/useDailyMetrics";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -16,13 +17,16 @@ export function PomodoroTimer() {
   const [time, setTime] = useState(FOCUS_TIME * 60);
   const [isActive, setIsActive] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
-  const [sessionCount, setSessionCount] = useState(0);
+
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const breakAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const { user } = useAuth();
+  const userId = user?.userId;
+
+  const { dailyMetrics, isPending } = useDailyMetrics(userId);
   const { mutateAsync: logFocusSession } = usePostData(
     "/api/focus/focus-session"
   );
@@ -55,7 +59,6 @@ export function PomodoroTimer() {
       }
 
       if (!isBreak) {
-        setSessionCount((prevCount) => prevCount + 1);
         setIsBreak(true);
         setTime(BREAK_TIME * 60);
         toast.success("Focus session completed! Time for a break.");
@@ -113,6 +116,9 @@ export function PomodoroTimer() {
     ? Math.min(((BREAK_TIME * 60 - time) / (BREAK_TIME * 60)) * 100, 100)
     : Math.min(((FOCUS_TIME * 60 - time) / (FOCUS_TIME * 60)) * 100, 100);
 
+  if (isPending) {
+    return <p>Loading daily metrics...</p>;
+  }
   return (
     <Card className="bg-[#101317] text-[#E5E7EB] border-2 border-[#232B3A]  rounded-2xl overflow-hidden ">
       <CardContent className="p-10 ">
@@ -209,7 +215,7 @@ export function PomodoroTimer() {
           <div className="flex items-center gap-2">
             <div className="text-sm">Sessions completed today:</div>
             <div className="text-sm font-medium text-[#16C784]">
-              {sessionCount}
+              {dailyMetrics?.sessionsCompleted}
             </div>
           </div>
         </div>
