@@ -48,10 +48,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [pathname]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && pathname === "/login") {
       router.push("/");
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, pathname]);
 
   const logout = () => {
     setIsAuthenticated(false);

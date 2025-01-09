@@ -4,6 +4,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import { useGetData } from "@/hooks/useApi";
 import { motion } from "framer-motion";
 import { Clock, Flame, Target } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -13,6 +14,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { SkeletonCard } from "./SkeletonLoading";
 
 interface FocusMetric {
   date: string;
@@ -33,14 +35,20 @@ interface FocusMetricsResponse {
 export function FocusDashboard() {
   const { user } = useAuth();
   const userId = user?.userId;
+  const [dayUrl, setDayUrl] = useState<string | null>(null);
+  const [weekUrl, setWeekUrl] = useState<string | null>(null);
 
-  const dayUrl = `/api/metrics/focus-metrics?userId=${userId}&type=day`;
-  const weekUrl = `/api/metrics/focus-metrics?userId=${userId}&type=week`;
+  useEffect(() => {
+    if (userId) {
+      setDayUrl(`/api/metrics/focus-metrics?userId=${userId}&type=day`);
+      setWeekUrl(`/api/metrics/focus-metrics?userId=${userId}&type=week`);
+    }
+  }, [userId]);
 
   const { data: dayData, isPending: isDayLoading } =
-    useGetData<FocusMetricsResponse>(dayUrl);
+    useGetData<FocusMetricsResponse>(dayUrl ?? "");
   const { data: weekData, isPending: isWeekLoading } =
-    useGetData<FocusMetricsResponse>(weekUrl);
+    useGetData<FocusMetricsResponse>(weekUrl ?? "");
 
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
@@ -61,22 +69,8 @@ export function FocusDashboard() {
     return "Incredible focus today! You're unstoppable! Keep it up! 🌟 🙌";
   };
 
-  if (isDayLoading || isWeekLoading) {
-    return (
-      <motion.div
-        className="fullscreen-skeleton absolute top-0 left-0 w-full h-full bg-[#101317] flex justify-center items-center z-50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
-        <motion.div
-          className="glass-card animate-pulse bg-[#232B3A] w-[80%] h-[80%] rounded-xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, repeat: Infinity, repeatType: "reverse" }}
-        />
-      </motion.div>
-    );
+  if (isDayLoading || isWeekLoading || !userId || !dayUrl || !weekUrl) {
+    return <SkeletonCard />;
   }
 
   const dailyMetrics = {

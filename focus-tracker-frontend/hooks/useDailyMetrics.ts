@@ -14,14 +14,20 @@ interface FocusMetricsResponse {
 }
 
 export function useDailyMetrics(userId: number | undefined) {
-  const dayUrl = `/api/metrics/focus-metrics?userId=${userId}&type=day`;
-
+  const dayUrl = userId
+    ? `/api/metrics/focus-metrics?userId=${userId}&type=day`
+    : "";
   const { data, isPending } = useGetData<FocusMetricsResponse>(dayUrl);
 
-  const dailyMetrics = {
-    totalFocusTime: data?.data?.daily?.total_duration || 0,
-    sessionsCompleted: data?.data?.daily?.total_sessions || 0,
-  };
+  const dailyMetrics = data?.data?.daily
+    ? {
+        totalFocusTime: data?.data?.daily?.total_duration || 0,
+        sessionsCompleted: data?.data?.daily?.total_sessions || 0,
+      }
+    : {
+        totalFocusTime: 0,
+        sessionsCompleted: 0,
+      };
 
   return {
     dailyMetrics,
