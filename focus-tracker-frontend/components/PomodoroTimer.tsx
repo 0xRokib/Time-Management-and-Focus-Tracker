@@ -13,7 +13,7 @@ const FOCUS_TIME = 1; // Focus session duration in minutes
 const BREAK_TIME = 5; // Break session duration in minutes
 
 export function PomodoroTimer() {
-  const [time, setTime] = useState(FOCUS_TIME * 60); // Converting minutes to seconds
+  const [time, setTime] = useState(FOCUS_TIME * 60);
   const [isActive, setIsActive] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
   const [sessionCount, setSessionCount] = useState(0);
