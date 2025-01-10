@@ -10,7 +10,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { isSameDay, parseISO } from "date-fns";
+import { isSameDay, subHours } from "date-fns";
 import { motion } from "framer-motion";
 import { Clock, Flame, Target } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -62,6 +62,11 @@ export function FocusDashboard() {
     error: weekError,
   } = useGetData<FocusMetricsResponse>(weekUrl ?? "");
 
+  useEffect(() => {
+    console.log(dayData); // Log the fetched day data
+    console.log(weekData); // Log the fetched week data
+  }, [dayData, weekData]);
+
   const formatTime = (minutes: string) => {
     const time = parseInt(minutes, 10);
     const hours = Math.floor(time / 60);
@@ -96,27 +101,28 @@ export function FocusDashboard() {
     return <SkeletonCard />;
   }
 
+  const today = new Date();
+
   const dailyMetrics = {
-    totalFocusTime: Object.values(dayData?.data || {})
-      .filter((metric) => {
-        if (!metric.date) return false;
-        const metricDate = parseISO(metric.date);
-        const today = new Date();
+    totalFocusTime: Object.entries(dayData?.data || {})
+      .filter(([key]) => {
+        const metricDate = subHours(new Date(key), 6); // Adjust for timezone
         return isSameDay(metricDate, today);
       })
       .reduce(
-        (total, metric) => total + parseInt(metric.total_duration, 10),
+        (total, [, metric]) => total + parseInt(metric.total_duration, 10),
         0
       ),
 
-    sessionsCompleted: Object.values(dayData?.data || {})
-      .filter((metric) => {
-        if (!metric.date) return false;
-        const metricDate = parseISO(metric.date);
-        const today = new Date();
+    sessionsCompleted: Object.entries(dayData?.data || {})
+      .filter(([key]) => {
+        const metricDate = subHours(new Date(key), 6); // Adjust for timezone
         return isSameDay(metricDate, today);
       })
-      .reduce((total, metric) => total + parseInt(metric.session_count, 10), 0),
+      .reduce(
+        (total, [, metric]) => total + parseInt(metric.session_count, 10),
+        0
+      ),
   };
 
   const weeklyMetrics = {
@@ -128,17 +134,20 @@ export function FocusDashboard() {
       (total, metric) => total + parseInt(metric.session_count, 10),
       0
     ),
-    dailyBreakdown: Object.values(weekData?.data || {}).map((metric) => ({
-      date: new Date(metric.date!).toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-      }),
-      dayName: new Date(metric.date!).toLocaleString("en-US", {
-        weekday: "short",
-      }),
-      totalFocusTime: parseInt(metric.total_duration, 10),
-      totalSessions: parseInt(metric.session_count, 10),
-    })),
+    dailyBreakdown: Object.values(weekData?.data || {}).map((metric) => {
+      const metricDate = subHours(new Date(metric.date!), 6);
+      return {
+        date: metricDate.toLocaleDateString("en-US", {
+          month: "numeric",
+          day: "numeric",
+        }),
+        dayName: metricDate.toLocaleString("en-US", {
+          weekday: "short",
+        }),
+        totalFocusTime: parseInt(metric.total_duration, 10),
+        totalSessions: parseInt(metric.session_count, 10),
+      };
+    }),
   };
 
   const chartData = {
