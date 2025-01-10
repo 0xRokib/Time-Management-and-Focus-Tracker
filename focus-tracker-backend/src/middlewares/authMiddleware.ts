@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 const dotenvConfig = require("../config/dotenvConfig");
+
 interface AuthRequest extends Request {
   user?: { id: number };
 }
+
 interface AuthPayload {
   userId: number;
   iat: number;
@@ -23,6 +25,9 @@ export const authMiddleware = (
     req.user = { id: decoded.userId };
     next();
   } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ error: "Token has expired" });
+    }
     res.status(401).json({ error: "Invalid token" });
   }
 };

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import redisClient from "../config/redis";
 
-const RATE_LIMIT_WINDOW = 60; // 60 seconds
-const MAX_REQUESTS = 10; // Maximum 10 requests per window
+const RATE_LIMIT_WINDOW = 600;
+const MAX_REQUESTS = 20;
 
 export const rateLimiter =
   (routeKey: string) =>
@@ -25,6 +25,5 @@ export const rateLimiter =
     } catch (err) {
       console.error("Rate limiter error:", err);
       next(err);
-      res.status(500).send("Internal server error");
     }
   };
