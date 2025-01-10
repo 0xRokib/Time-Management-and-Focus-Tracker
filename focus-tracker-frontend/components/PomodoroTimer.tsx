@@ -17,6 +17,7 @@ export function PomodoroTimer() {
   const [isBreak, setIsBreak] = useState(false);
 
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const [sessionsToday, setSessionsToday] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const breakAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -58,6 +59,7 @@ export function PomodoroTimer() {
         setIsBreak(true);
         setTime(BREAK_TIME * 60);
         toast.success("Focus session completed! Time for a break.");
+        setSessionsToday(sessionsToday + 1);
         if (user) {
           logFocusSession({
             userId: user.userId,
@@ -65,7 +67,8 @@ export function PomodoroTimer() {
           });
         }
       } else {
-        resetTimer();
+        setIsBreak(false);
+        setTime(FOCUS_TIME * 60);
         toast.success("Break completed! Ready for another focus session?");
       }
     }
@@ -77,6 +80,7 @@ export function PomodoroTimer() {
     isActive,
     time,
     isBreak,
+    sessionsToday,
     resetTimer,
     isSoundEnabled,
     logFocusSession,
@@ -113,12 +117,13 @@ export function PomodoroTimer() {
     : Math.min(((FOCUS_TIME * 60 - time) / (FOCUS_TIME * 60)) * 100, 100);
 
   return (
-    <div className="w-full h-screen flex justify-center items-center">
+    <div className="w-full h-screen flex justify-center items-center overflow-hidden">
       <Card className="bg-[#101317] text-[#E5E7EB] border-2 border-[#232B3A] rounded-2xl overflow-hidden w-full max-w-4xl h-full max-h-[600px]">
-        <CardContent className="p-10">
+        <CardContent className="p-6 md:p-10">
           <div className="flex flex-col items-center space-y-6">
+            {/* Timer header and sound toggle */}
             <div className="w-full flex justify-between items-center mb-4">
-              <div className="text-sm font-medium text-[#16C784]">
+              <div className="text-xl font-semibold text-[#16C784]">
                 {isBreak ? "Break Time" : "Focus Time"}
               </div>
               <Button
@@ -128,14 +133,15 @@ export function PomodoroTimer() {
                 className="hover:text-[#16C784]"
               >
                 {isSoundEnabled ? (
-                  <Volume2 className="h-4 w-4" />
+                  <Volume2 className="h-5 w-5" />
                 ) : (
-                  <VolumeX className="h-4 w-4" />
+                  <VolumeX className="h-5 w-5" />
                 )}
               </Button>
             </div>
 
-            <div className="relative mb-8">
+            {/* Timer display */}
+            <div className="relative mb-6">
               <motion.div
                 className="text-8xl font-bold tracking-tighter font-mono text-[#FFFFFF]"
                 animate={{ scale: isActive ? 1.05 : 1 }}
@@ -161,7 +167,8 @@ export function PomodoroTimer() {
               </AnimatePresence>
             </div>
 
-            <div className="w-full max-w-md mb-8">
+            {/* Progress bar */}
+            <div className="w-full max-w-md mb-6">
               <motion.div className="relative bg-[#374151] rounded-full h-3 w-full overflow-hidden">
                 <motion.div
                   className="absolute top-0 left-0 h-3 bg-[#16C784] rounded-full"
@@ -180,6 +187,7 @@ export function PomodoroTimer() {
               </div>
             </div>
 
+            {/* Timer control buttons */}
             <div className="flex gap-6 mb-6">
               <Button
                 onClick={toggleTimer}
@@ -204,6 +212,11 @@ export function PomodoroTimer() {
               >
                 <RotateCcw className="h-6 w-6" />
               </Button>
+            </div>
+
+            {/* Sessions completed today */}
+            <div className="text-sm font-medium text-[#16C784]">
+              Sessions completed today: {sessionsToday}
             </div>
           </div>
         </CardContent>
