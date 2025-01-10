@@ -1,5 +1,4 @@
 "use client";
-
 import { useAuth } from "@/app/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,6 +27,7 @@ export function PomodoroTimer() {
   const userId = user?.userId;
 
   const { dailyMetrics, isPending } = useDailyMetrics(userId);
+  console.log(dailyMetrics);
   const { mutateAsync: logFocusSession } = usePostData(
     "/api/focus/focus-session"
   );
@@ -117,110 +117,122 @@ export function PomodoroTimer() {
     ? Math.min(((BREAK_TIME * 60 - time) / (BREAK_TIME * 60)) * 100, 100)
     : Math.min(((FOCUS_TIME * 60 - time) / (FOCUS_TIME * 60)) * 100, 100);
 
+  // Define motivational quotes
+  const quotes = [
+    "Keep pushing forward, you're doing great!",
+    "Success comes from consistency, keep going!",
+    "Believe in yourself. You got this!",
+    "Every step you take brings you closer to your goal.",
+    "Progress is progress, no matter how small!",
+    "You are capable of amazing things!",
+  ];
+
+  // Select a random quote
+  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
   if (isPending) {
     return <SkeletonCard />;
   }
   return (
-    <Card className="bg-[#101317] text-[#E5E7EB] border-2 border-[#232B3A]  rounded-2xl overflow-hidden ">
-      <CardContent className="p-10 ">
-        <div className="flex flex-col items-center space-y-6">
-          <div className="w-full flex justify-between items-center mb-4">
-            <div className="text-sm font-medium text-[#16C784]">
-              {isBreak ? "Break Time" : "Focus Time"}
+    <div className="w-full h-screen flex justify-center items-center">
+      <Card className="bg-[#101317] text-[#E5E7EB] border-2 border-[#232B3A] rounded-2xl overflow-hidden w-full max-w-4xl h-full max-h-[600px]">
+        <CardContent className="p-10">
+          <div className="flex flex-col items-center space-y-6">
+            <div className="w-full flex justify-between items-center mb-4">
+              <div className="text-sm font-medium text-[#16C784]">
+                {isBreak ? "Break Time" : "Focus Time"}
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleSound}
+                className="hover:text-[#16C784]"
+              >
+                {isSoundEnabled ? (
+                  <Volume2 className="h-4 w-4" />
+                ) : (
+                  <VolumeX className="h-4 w-4" />
+                )}
+              </Button>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleSound}
-              className="hover:text-[#16C784]"
-            >
-              {isSoundEnabled ? (
-                <Volume2 className="h-4 w-4" />
-              ) : (
-                <VolumeX className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
 
-          <div className="relative mb-8">
-            <motion.div
-              className="text-8xl font-bold tracking-tighter font-mono text-[#FFFFFF]"
-              animate={{ scale: isActive ? 1.05 : 1 }}
-              transition={{
-                duration: 0.5,
-                repeat: Infinity,
-                repeatType: "reverse",
-              }}
-            >
-              {formatTime(time)}
-            </motion.div>
-            <AnimatePresence>
-              {isActive && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-[#16C784]"
-                >
-                  {isBreak ? "Take a breather..." : "Stay focused!"}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <div className="w-full max-w-md mb-8">
-            <motion.div className="relative bg-[#374151] rounded-full h-3 w-full overflow-hidden">
+            <div className="relative mb-8">
               <motion.div
-                className="absolute top-0 left-0 h-3 bg-[#16C784] rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
+                className="text-8xl font-bold tracking-tighter font-mono text-[#FFFFFF]"
+                animate={{ scale: isActive ? 1.05 : 1 }}
                 transition={{
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 20,
+                  duration: 0.5,
+                  repeat: Infinity,
+                  repeatType: "reverse",
                 }}
-              />
-            </motion.div>
-            <div className="flex justify-between mt-2 text-sm">
-              <span>{isBreak ? "Break Progress" : "Focus Progress"}</span>
-              <span>{Math.round(progress)}%</span>
+              >
+                {formatTime(time)}
+              </motion.div>
+              <AnimatePresence>
+                {isActive && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-[#16C784]"
+                  >
+                    {isBreak ? "Take a breather..." : "Stay focused!"}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
 
-          <div className="flex gap-6 mb-6">
-            <Button
-              onClick={toggleTimer}
-              size="lg"
-              className={`w-16 h-16 rounded-full transition-all ${
-                isActive
-                  ? "bg-[#374151] hover:bg-[#475569]"
-                  : "bg-[#16C784] hover:bg-[#2ECC71]"
-              }`}
-            >
-              {isActive ? (
-                <Pause className="h-6 w-6" />
-              ) : (
-                <Play className="h-6 w-6 ml-1" />
-              )}
-            </Button>
-            <Button
-              onClick={resetTimer}
-              variant="outline"
-              size="lg"
-              className="w-16 h-16 rounded-full border-[#374151] hover:bg-[#475569]"
-            >
-              <RotateCcw className="h-6 w-6" />
-            </Button>
-          </div>
+            <div className="w-full max-w-md mb-8">
+              <motion.div className="relative bg-[#374151] rounded-full h-3 w-full overflow-hidden">
+                <motion.div
+                  className="absolute top-0 left-0 h-3 bg-[#16C784] rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 20,
+                  }}
+                />
+              </motion.div>
+              <div className="flex justify-between mt-2 text-sm">
+                <span>{isBreak ? "Break Progress" : "Focus Progress"}</span>
+                <span>{Math.round(progress)}%</span>
+              </div>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <div className="text-sm">Sessions completed today:</div>
+            <div className="flex gap-6 mb-6">
+              <Button
+                onClick={toggleTimer}
+                size="lg"
+                className={`w-16 h-16 rounded-full transition-all ${
+                  isActive
+                    ? "bg-[#374151] hover:bg-[#475569]"
+                    : "bg-[#16C784] hover:bg-[#2ECC71]"
+                }`}
+              >
+                {isActive ? (
+                  <Pause className="h-6 w-6" />
+                ) : (
+                  <Play className="h-6 w-6 ml-1" />
+                )}
+              </Button>
+              <Button
+                onClick={resetTimer}
+                variant="outline"
+                size="lg"
+                className="w-16 h-16 rounded-full border-[#374151] hover:bg-[#475569]"
+              >
+                <RotateCcw className="h-6 w-6" />
+              </Button>
+            </div>
+
             <div className="text-sm font-medium text-[#16C784]">
-              {dailyMetrics?.sessionsCompleted}
+              {randomQuote}
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
