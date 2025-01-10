@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Create an Axios instance with a base URL
+//  Axios instance with a base URL
 const apiClient = axios.create({
   baseURL: "http://localhost:5001",
   headers: {

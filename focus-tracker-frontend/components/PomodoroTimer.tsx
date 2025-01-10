@@ -3,6 +3,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePostData } from "@/hooks/useApi";
+import { useFocusMetrics } from "@/hooks/useFocusMetrics"; // Import the hook
 import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -17,12 +18,12 @@ export function PomodoroTimer() {
   const [isBreak, setIsBreak] = useState(false);
 
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
-  const [sessionsToday, setSessionsToday] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const breakAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const { user } = useAuth();
+  const { dailyMetrics, isDayLoading, dayError } = useFocusMetrics();
 
   const { mutateAsync: logFocusSession } = usePostData(
     "/api/focus/focus-session"
@@ -59,7 +60,6 @@ export function PomodoroTimer() {
         setIsBreak(true);
         setTime(BREAK_TIME * 60);
         toast.success("Focus session completed! Time for a break.");
-        setSessionsToday(sessionsToday + 1);
         if (user) {
           logFocusSession({
             userId: user.userId,
@@ -80,7 +80,6 @@ export function PomodoroTimer() {
     isActive,
     time,
     isBreak,
-    sessionsToday,
     resetTimer,
     isSoundEnabled,
     logFocusSession,
@@ -115,6 +114,16 @@ export function PomodoroTimer() {
   const progress = isBreak
     ? Math.min(((BREAK_TIME * 60 - time) / (BREAK_TIME * 60)) * 100, 100)
     : Math.min(((FOCUS_TIME * 60 - time) / (FOCUS_TIME * 60)) * 100, 100);
+
+  if (isDayLoading || dayError) {
+    return (
+      <div className="w-full h-full flex justify-center items-center text-white">
+        <h2 className="text-xl font-semibold text-gray-400">
+          Failed to load daily focus metrics. Please try again later.
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-screen flex justify-center items-center overflow-hidden">
@@ -215,8 +224,11 @@ export function PomodoroTimer() {
             </div>
 
             {/* Sessions completed today */}
-            <div className="text-sm font-medium text-[#16C784]">
-              Sessions completed today: {sessionsToday}
+            <div className="text-sm font-medium text-[#16C784] ">
+              Sessions completed today:
+              <span className="text-lg font-medium text-[#FFFFFF]">
+                {dailyMetrics.sessionsCompleted}
+              </span>
             </div>
           </div>
         </CardContent>

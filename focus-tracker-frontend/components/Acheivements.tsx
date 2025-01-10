@@ -1,8 +1,8 @@
 "use client";
 
-import { useAuth } from "@/app/context/AuthContext"; // Assuming the context provides user data
+import { useAuth } from "@/app/context/AuthContext";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useGetData } from "@/hooks/useApi"; // Assuming you are using a hook for API fetching
+import { useGetData } from "@/hooks/useApi";
 import { motion } from "framer-motion";
 import { Flame, Star, Target, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
