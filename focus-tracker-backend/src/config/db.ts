@@ -19,7 +19,7 @@ const dbConfig: DBConfig = {
   database: dotenvConfig.DB_CONFIG.database,
   password: dotenvConfig.DB_CONFIG.password,
   port: Number(dotenvConfig.DB_CONFIG.port),
-  ssl: { rejectUnauthorized: false }, // Set SSL options
+  // ssl: { rejectUnauthorized: false }, // Set SSL options
 };
 
 // If a connection string is provided, override individual config values

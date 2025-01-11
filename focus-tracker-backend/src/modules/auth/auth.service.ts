@@ -9,7 +9,13 @@ export const register = async (
   password: string
 ): Promise<string> => {
   const existingUser = await findUserByEmail(email);
-  if (existingUser) throw new Error("User already exists");
+  console.log(existingUser);
+  if (existingUser) {
+    throw {
+      message: "User already exists",
+      statusCode: 400,
+    };
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await createUser(name, email, hashedPassword);
