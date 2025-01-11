@@ -59,7 +59,7 @@ export function PomodoroTimer() {
 
       if (!isBreak) {
         setIsBreak(true);
-        setTime(BREAK_TIME * 60);
+        setTime(BREAK_TIME * 60); // Reset to break time
         toast.success("Focus session completed! Time for a break.");
         if (user) {
           logFocusSession({
@@ -69,13 +69,14 @@ export function PomodoroTimer() {
         }
       } else {
         setIsBreak(false);
-        setTime(FOCUS_TIME * 60);
+        setTime(FOCUS_TIME * 60); // Reset to focus time
         toast.success("Break completed! Ready for another focus session?");
+        setIsActive(false); // Stop the timer after a break
       }
     }
 
     return () => {
-      if (interval) clearInterval(interval);
+      if (interval) clearInterval(interval); // Clean up interval on unmount
     };
   }, [
     isActive,

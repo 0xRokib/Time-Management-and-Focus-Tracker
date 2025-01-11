@@ -1,5 +1,6 @@
 "use client";
 
+import { SkeletonCard } from "@/components/SkeletonLoading";
 import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
@@ -60,6 +61,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("user");
     router.push("/login");
   };
+
+  if (loading) {
+    return <SkeletonCard />;
+  }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, logout, loading }}>

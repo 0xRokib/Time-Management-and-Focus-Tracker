@@ -2,11 +2,15 @@ import axios from "axios";
 
 //  Axios instance with a base URL
 const apiClient = axios.create({
-  baseURL: "http://localhost:5001",
+  baseURL: "https://ph-dev-task-ol67.onrender.com/",
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+// hosted link
+// https://ph-dev-task-ol67.onrender.com/
+// http://localhost:5001
 
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
