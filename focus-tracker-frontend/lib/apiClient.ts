@@ -2,7 +2,7 @@ import axios from "axios";
 
 //  Axios instance with a base URL
 const apiClient = axios.create({
-  baseURL: "http://localhost:5001",
+  baseURL: "https://ph-dev-task-ol67.onrender.com",
   headers: {
     "Content-Type": "application/json",
   },
