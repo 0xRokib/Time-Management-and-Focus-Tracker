@@ -22,7 +22,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/focus", focusRouter);
 app.use("/api/metrics", metricsRouter);
 
-// error handler mididleware new string chnages
+// error handler
 app.use(errorHandler);
 
 export default app;

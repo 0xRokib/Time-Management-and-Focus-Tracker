@@ -9,6 +9,7 @@ interface DBConfig {
   password: string;
   port: number;
   connectionString?: string; // Optional property
+  ssl?: boolean | object; // SSL configuration
 }
 
 // Build db config
@@ -18,11 +19,13 @@ const dbConfig: DBConfig = {
   database: dotenvConfig.DB_CONFIG.database,
   password: dotenvConfig.DB_CONFIG.password,
   port: Number(dotenvConfig.DB_CONFIG.port),
+  ssl: { rejectUnauthorized: false }, // Set SSL options
 };
 
 // If a connection string is provided, override individual config values
 if (dotenvConfig.DB_CONFIG.connectionString) {
   dbConfig.connectionString = dotenvConfig.DB_CONFIG.connectionString;
+  dbConfig.ssl = { rejectUnauthorized: false }; // Ensure SSL is enabled for connection string
 }
 
 const db = new Pool(dbConfig);
