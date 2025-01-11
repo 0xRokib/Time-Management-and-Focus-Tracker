@@ -1,4 +1,3 @@
-// useWeeklyFocusMetrics.ts (Custom Hook for Weekly Metrics)
 import { useAuth } from "@/app/context/AuthContext";
 import { useGetData } from "@/hooks/useApi";
 import { subHours } from "date-fns";

@@ -6,6 +6,7 @@ export const useGetData = <T>(url: string) => {
   return useQuery<T>({
     queryKey: [url],
     queryFn: () => getData<T>(url),
+    enabled: !!url,
   });
 };
 

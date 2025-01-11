@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -38,8 +39,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const storedUser = localStorage.getItem("user");
 
     if (token && storedUser) {
-      setIsAuthenticated(true);
-      setUser(JSON.parse(storedUser));
+      try {
+        setIsAuthenticated(true);
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+        localStorage.removeItem("user");
+        setIsAuthenticated(false);
+        setUser(null);
+      }
     } else {
       setIsAuthenticated(false);
       setUser(null);

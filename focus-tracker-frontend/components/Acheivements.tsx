@@ -25,7 +25,6 @@ export default function AchievementsPage() {
     }
   }, [userId]);
 
-  // Call the hook
   const {
     data: weekData,
     isPending,
@@ -107,10 +106,10 @@ export default function AchievementsPage() {
     const badges = [];
 
     // Badge calculation for 1, 3, 5, 7 days streaks
-    if (streakData.currentStreak >= 1) badges.push("Focus Initiate"); // Completing your first streak
-    if (streakData.currentStreak >= 3) badges.push("Focus Builder"); // Starting to build your streak
-    if (streakData.currentStreak >= 5) badges.push("Consistency Expert"); // Showing consistent effort
-    if (streakData.currentStreak >= 7) badges.push("Focus Master"); // Mastering focus with a 7-day streak
+    if (streakData.currentStreak >= 1) badges.push("Focus Initiate");
+    if (streakData.currentStreak >= 3) badges.push("Focus Builder");
+    if (streakData.currentStreak >= 5) badges.push("Consistency Expert");
+    if (streakData.currentStreak >= 7) badges.push("Focus Master");
 
     return badges;
   };

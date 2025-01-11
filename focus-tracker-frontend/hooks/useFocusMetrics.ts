@@ -29,9 +29,17 @@ export function useFocusMetrics() {
     data: dayData,
     isPending: isDayLoading,
     error: dayError,
+    refetch: refetchDayData,
   } = useGetData<FocusMetricsResponse>(dayUrl ?? "");
 
   const today = new Date();
+
+  useEffect(() => {
+    if (dayData) {
+      refetchDayData();
+      console.log("called");
+    }
+  }, [dayData, refetchDayData]);
 
   const dailyMetrics = {
     totalFocusTime: Object.entries(dayData?.data || {})

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePostData } from "@/hooks/useApi";
+import { AxiosError } from "axios";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,7 +33,6 @@ export default function RegisterPage() {
   );
 
   const router = useRouter();
-
   const onSubmit = async (data: FormData) => {
     console.log(data);
     try {
@@ -44,15 +44,38 @@ export default function RegisterPage() {
             router.push("/login");
           }, 1000);
         },
-        onError: () => {
-          setErrorMessage(
-            "Registration failed. Please Enter valid input Only!"
-          );
+        onError: (error: unknown) => {
+          let errorMessage =
+            "Registration failed. Please enter valid input only!";
+
+          if (isAxiosError(error)) {
+            const responseData = error.response?.data;
+            if (
+              responseData &&
+              typeof responseData === "object" &&
+              "message" in responseData
+            ) {
+              errorMessage = (responseData as { message: string }).message;
+            }
+          } else if (error instanceof Error) {
+            errorMessage = error.message;
+          }
+
+          setErrorMessage(errorMessage);
         },
       });
-    } catch {
-      setErrorMessage("An unexpected error occurred.");
+    } catch (error: unknown) {
+      let unexpectedError = "An unexpected error occurred.";
+      if (error instanceof Error) {
+        unexpectedError = error.message;
+      }
+      setErrorMessage(unexpectedError);
     }
+  };
+
+  // Helper function to check if the error is an Axios error
+  const isAxiosError = (error: unknown): error is AxiosError => {
+    return (error as AxiosError).isAxiosError !== undefined;
   };
 
   // Validation Rules
