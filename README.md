@@ -189,18 +189,6 @@ Fetches focus metrics, including streak information.
 1. Push the Docker image to a container registry.
 2. Deploy the Docker container on your server or cloud service.
 
-## Screenshots
-
-### Pomodoro Timer UI
-
-_![alt text](<CleanShot 2025-01-12 at 02.25.57@2x.png>)_
-
-### Focus Dashboard
-
-_![alt text](<CleanShot 2025-01-12 at 02.23.53@2x.png>)_
-
-_![alt text](<CleanShot 2025-01-12 at 02.26.12@2x.png>)_
-
 ## Contact
 
 For questions or support, reach out to:
