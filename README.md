@@ -6,7 +6,7 @@ A Time Management and Focus Tracker feature designed to enhance student producti
 
 ### Live Demo
 
-- **URL**: [Frontend Live Demo](https://focus-tracker-beryl.vercel.app/)
+- **URL**: [Time Management and Focus Tracker](https://focus-tracker-beryl.vercel.app/)
 
 ### Demo Credentials
 
