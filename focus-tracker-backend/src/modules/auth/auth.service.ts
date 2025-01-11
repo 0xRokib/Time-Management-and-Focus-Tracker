@@ -33,5 +33,5 @@ export const login = async (
 };
 
 const generateToken = (userId: number): string => {
-  return jwt.sign({ userId }, dotenvConfig.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign({ userId }, dotenvConfig.JWT_SECRET, { expiresIn: "7d" });
 };

@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true
+    "target": "ES6", // Specify ECMAScript target version
+    "module": "commonjs", // Use CommonJS module system
+    "strict": true, // Enable strict type-checking
+    "esModuleInterop": true, // Allow interoperation with ES modules
+    "skipLibCheck": true, // Skip checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Enforce consistent casing in imports
+    "noImplicitAny": true, // Prevent use of implicit `any` types
+    "strictNullChecks": true, // Ensure strict null checks
+    "rootDir": "src", // Specify the root folder for source files
+    "outDir": "dist" // Specify the output folder for compiled files
   },
-  "include": ["src/**/*", "src", "types"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"], // Include all .ts files in the src folder
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and output folder
 }
