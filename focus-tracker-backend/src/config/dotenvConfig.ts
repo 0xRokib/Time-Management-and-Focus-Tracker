@@ -12,6 +12,7 @@ const config = {
     database: process.env.DB_NAME,
     password: process.env.DB_PASS,
     port: process.env.DB_PORT || 5432,
+    connectionString: process.env.DB_CONNECTION_STRING || null,
   },
   REDIS_CONFIG: {
     url:
