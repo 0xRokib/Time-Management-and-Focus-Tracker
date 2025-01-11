@@ -32,16 +32,6 @@ export default function AchievementsPage() {
     error,
   } = useGetData<FocusMetricsResponse>(apiUrl || "");
 
-  if (!userId) {
-    return (
-      <div className="w-full h-full flex justify-center items-center text-white">
-        <h2 className="text-xl font-semibold text-gray-400">
-          User not authenticated. Please log in.
-        </h2>
-      </div>
-    );
-  }
-
   if (isPending) return <SkeletonCard />;
   if (error || !weekData) {
     return (

@@ -1,5 +1,6 @@
 "use client";
 import { Sidebar } from "@/components/Sidebar";
+import { SkeletonCard } from "@/components/SkeletonLoading";
 import { useMetadata } from "@/hooks/useMetadata";
 import { Poppins } from "@next/font/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/favicon.ico" />
         {metadata && (
           <>
             <title>{metadata.title}</title>
@@ -61,9 +63,9 @@ function Content({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, loading, pathname, router]);
 
-  // if (loading) {
-  //   return <SkeletonLoading />;
-  // }
+  if (loading) {
+    return <SkeletonCard />;
+  }
 
   if (
     !isAuthenticated &&

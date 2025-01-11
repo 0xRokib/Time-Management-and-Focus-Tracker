@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { SkeletonCard } from "./SkeletonLoading";
 
 const FOCUS_TIME = 1; // Focus session duration in minutes
 const BREAK_TIME = 1; // Break session duration in minutes
@@ -89,13 +90,13 @@ export function PomodoroTimer() {
   const toggleTimer = () => {
     setIsActive(!isActive);
     if (!isActive && time === FOCUS_TIME * 60) {
-      toast.info("Focus session started. You can do this! 💪");
+      toast.success("Focus session started. You can do this! 💪");
     }
   };
 
   const toggleSound = () => {
     setIsSoundEnabled(!isSoundEnabled);
-    toast.info(
+    toast.success(
       isSoundEnabled
         ? "Sound notifications disabled"
         : "Sound notifications enabled"
@@ -115,7 +116,7 @@ export function PomodoroTimer() {
     ? Math.min(((BREAK_TIME * 60 - time) / (BREAK_TIME * 60)) * 100, 100)
     : Math.min(((FOCUS_TIME * 60 - time) / (FOCUS_TIME * 60)) * 100, 100);
 
-  if (isDayLoading || dayError) {
+  if (dayError) {
     return (
       <div className="w-full h-full flex justify-center items-center text-white">
         <h2 className="text-xl font-semibold text-gray-400">
@@ -123,6 +124,9 @@ export function PomodoroTimer() {
         </h2>
       </div>
     );
+  }
+  if (isDayLoading) {
+    return <SkeletonCard />;
   }
 
   return (
@@ -224,9 +228,9 @@ export function PomodoroTimer() {
             </div>
 
             {/* Sessions completed today */}
-            <div className="text-sm font-medium text-[#16C784] ">
+            <div className="text-sm font-medium text-[#16C784] flex items-center">
               Sessions completed today:
-              <span className="text-lg font-medium text-[#FFFFFF]">
+              <span className="text-sm font-medium text-[#FFFFFF] ml-2">
                 {dailyMetrics.sessionsCompleted}
               </span>
             </div>

@@ -91,8 +91,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <div className="flex-1 relative bg-[#161B22] flex justify-center items-center">
+    <div className="flex min-h-screen flex-col lg:flex-row">
+      <div className="hidden lg:flex flex-1 relative bg-[#161B22] justify-center items-center p-4 sm:p-8">
         <Image
           src="/images/registration.png"
           alt="Register"
@@ -100,7 +100,7 @@ export default function RegisterPage() {
           height={300}
         />
       </div>
-      <div className="flex-1 flex justify-center items-center bg-[#101317] ">
+      <div className="flex-1 flex justify-center items-center bg-[#101317] w-full h-screen p-4 sm:p-8">
         <motion.div
           className="w-full max-w-md p-8 rounded-xl shadow border-2 border-[#232B3A]"
           initial={{ opacity: 0, y: 50 }}

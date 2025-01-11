@@ -1,7 +1,6 @@
-// useFocusMetrics.ts (Custom Hook for Daily Metrics)
 import { useAuth } from "@/app/context/AuthContext";
 import { useGetData } from "@/hooks/useApi";
-import { isSameDay, subHours } from "date-fns";
+import { isSameDay } from "date-fns";
 import { useEffect, useState } from "react";
 
 interface FocusMetric {
@@ -37,7 +36,8 @@ export function useFocusMetrics() {
   const dailyMetrics = {
     totalFocusTime: Object.entries(dayData?.data || {})
       .filter(([key]) => {
-        const metricDate = subHours(new Date(key), 6);
+        const metricDate = new Date(key);
+        metricDate.setHours(metricDate.getHours() + 6);
         return isSameDay(metricDate, today);
       })
       .reduce(
@@ -47,7 +47,8 @@ export function useFocusMetrics() {
 
     sessionsCompleted: Object.entries(dayData?.data || {})
       .filter(([key]) => {
-        const metricDate = subHours(new Date(key), 6);
+        const metricDate = new Date(key);
+        metricDate.setHours(metricDate.getHours() + 6);
         return isSameDay(metricDate, today);
       })
       .reduce(
