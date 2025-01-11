@@ -20,7 +20,6 @@ export const getFocusMetrics = async (
 
     if (cachedMetrics) {
       metrics = JSON.parse(cachedMetrics);
-      console.log("Data fetched from cache");
     } else {
       metrics =
         metricType === "day"
@@ -32,7 +31,6 @@ export const getFocusMetrics = async (
         CACHE_TTL_SECONDS,
         JSON.stringify(metrics)
       );
-      console.log("Data fetched from database and cached");
     }
 
     return metrics;
