@@ -10,8 +10,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SkeletonCard } from "./SkeletonLoading";
 
-const FOCUS_TIME = 1; // Focus session duration in minutes
-const BREAK_TIME = 1; // Break session duration in minutes
+const FOCUS_TIME = 25; // Focus session duration in minutes
+const BREAK_TIME = 5; // Break session duration in minutes
 
 export function PomodoroTimer() {
   const [time, setTime] = useState(FOCUS_TIME * 60);

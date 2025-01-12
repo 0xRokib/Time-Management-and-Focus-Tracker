@@ -40,7 +40,6 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      console.log("Sending registration request...");
       mutate(data, {
         onSuccess: (response) => {
           const { message } = response;
@@ -71,8 +70,6 @@ export default function RegisterPage() {
           } else if (error instanceof Error) {
             errorMessage = error.message;
           }
-
-          console.log("Setting error message:", errorMessage);
           setErrorMessage(errorMessage);
           toast.error(errorMessage);
         },
