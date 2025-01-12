@@ -27,7 +27,7 @@ export function Sidebar() {
   const { isAuthenticated, user, logout } = useAuth();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  console.log(user);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };

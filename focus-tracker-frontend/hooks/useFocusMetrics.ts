@@ -37,7 +37,6 @@ export function useFocusMetrics() {
   useEffect(() => {
     if (dayData) {
       refetchDayData();
-      console.log("called");
     }
   }, [dayData, refetchDayData]);
 
