@@ -139,7 +139,7 @@ A Time Management and Focus Tracker feature designed to enhance student producti
 
 ## API Documentation
 
-### POST /focus-session
+### POST /api/focus/focus-session
 
 Logs a focus session.
 
@@ -157,7 +157,7 @@ Logs a focus session.
   }
   ```
 
-### GET /focus-metrics
+### GET /api/metrics/focus-metrics
 
 Fetches focus metrics, including streak information.
 
