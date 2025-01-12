@@ -10,9 +10,8 @@ A Time Management and Focus Tracker feature designed to enhance student producti
 
 ### Demo Credentials
 
-- **Student**:
-  - Email: [admin@gmail.com](mailto:admin@gmail.com)
-  - Password: Admin123!
+- Email: [admin@gmail.com](mailto:admin@gmail.com)
+- Password: Admin123!
 
 ## Features
 
