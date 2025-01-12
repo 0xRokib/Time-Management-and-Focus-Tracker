@@ -39,8 +39,8 @@ A Time Management and Focus Tracker feature designed to enhance student producti
 ### Backend
 
 1. **API Endpoints**:
-   - `POST /focus-session`: Log completed focus sessions.
-   - `GET /focus-metrics`: Fetch daily/weekly metrics, including streak information.
+   - `POST /api/focus/focus-session`: Log completed focus sessions.
+   - `GET /api/metrics/focus-metrics`: Fetch daily/weekly metrics, including streak information.
 2. **Database Design**:
    - `users` table: Stores user details (e.g., ID, name, avatar).
    - `focus_sessions` table: Tracks sessions with user ID, duration, and timestamp.
@@ -146,7 +146,7 @@ Logs a focus session.
 - **Request Body**:
   ```json
   {
-    "user_id": "1",
+    "userId": "1",
     "duration": 25
   }
   ```
@@ -162,7 +162,7 @@ Logs a focus session.
 Fetches focus metrics, including streak information.
 
 - **Query Parameters**:
-  - `user_id`: User ID
+  - `userId`: User ID
   - `type`: `daily` or `weekly`
 - **Response**:
   ```json
