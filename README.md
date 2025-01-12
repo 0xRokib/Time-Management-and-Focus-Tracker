@@ -8,6 +8,10 @@ A Time Management and Focus Tracker feature designed to enhance student producti
 
 - **URL**: [Time Management and Focus Tracker](https://focus-tracker-beryl.vercel.app/)
 
+## Note on Render Inactivity
+
+The backend is Dockerized and hosted on Render. Free instances spin down after 15 minutes of inactivity, which may cause a delay of 30–60 seconds when a request is made after that period.
+
 ### Demo Credentials
 
 - Email: [admin@gmail.com](mailto:admin@gmail.com)
