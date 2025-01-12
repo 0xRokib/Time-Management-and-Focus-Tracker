@@ -15,6 +15,7 @@ interface FormData {
   email: string;
   password: string;
 }
+
 interface ResponseData {
   message: string;
   token: string;
@@ -27,15 +28,19 @@ export default function RegisterPage() {
     formState: { errors },
   } = useForm<FormData>();
   const [errorMessage, setErrorMessage] = useState("");
-
   const { mutate, isPending } = usePostData<FormData, ResponseData>(
     "/api/auth/register"
   );
-
   const router = useRouter();
+
+  // Helper function to check if the error is an AxiosError
+  const isAxiosError = (error: unknown): error is AxiosError => {
+    return (error as AxiosError).isAxiosError !== undefined;
+  };
+
   const onSubmit = async (data: FormData) => {
-    console.log(data);
     try {
+      console.log("Sending registration request...");
       mutate(data, {
         onSuccess: (response) => {
           const { message } = response;
@@ -46,39 +51,46 @@ export default function RegisterPage() {
         },
         onError: (error: unknown) => {
           let errorMessage =
-            "Registration failed. Please enter valid input only!";
+            "Registration failed. Please ensure your input is valid.";
 
           if (isAxiosError(error)) {
-            const responseData = error.response?.data;
-            if (
-              responseData &&
-              typeof responseData === "object" &&
-              "message" in responseData
-            ) {
-              errorMessage = (responseData as { message: string }).message;
+            const response = error.response;
+            const responseData = response?.data;
+
+            if (responseData) {
+              if (typeof responseData === "object") {
+                if ("message" in responseData) {
+                  errorMessage = (responseData as { message: string }).message;
+                } else if ("error" in responseData) {
+                  errorMessage = (responseData as { error: string }).error;
+                }
+              } else if (typeof responseData === "string") {
+                errorMessage = responseData;
+              }
             }
           } else if (error instanceof Error) {
             errorMessage = error.message;
           }
 
+          console.log("Setting error message:", errorMessage);
           setErrorMessage(errorMessage);
+          toast.error(errorMessage);
         },
       });
     } catch (error: unknown) {
+      console.error("Unexpected error during submission:", error);
+
       let unexpectedError = "An unexpected error occurred.";
       if (error instanceof Error) {
         unexpectedError = error.message;
       }
+
       setErrorMessage(unexpectedError);
+      toast.error(unexpectedError);
     }
   };
 
-  // Helper function to check if the error is an Axios error
-  const isAxiosError = (error: unknown): error is AxiosError => {
-    return (error as AxiosError).isAxiosError !== undefined;
-  };
-
-  // Validation Rules
+  // Validation rules
   const nameValidation = {
     required: "Full name is required",
     minLength: {
@@ -115,6 +127,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
+      {/* Left Section */}
       <div className="hidden lg:flex flex-1 relative bg-[#161B22] justify-center items-center p-4 sm:p-8">
         <Image
           src="/images/registration.png"
@@ -123,6 +136,8 @@ export default function RegisterPage() {
           height={300}
         />
       </div>
+
+      {/* Right Section */}
       <div className="flex-1 flex justify-center items-center bg-[#101317] w-full h-screen p-4 sm:p-8">
         <motion.div
           className="w-full max-w-md p-8 rounded-xl shadow border-2 border-[#232B3A]"
@@ -139,6 +154,7 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* Name Field */}
             <div>
               <label
                 htmlFor="name"
@@ -160,6 +176,8 @@ export default function RegisterPage() {
                 </p>
               )}
             </div>
+
+            {/* Email Field */}
             <div>
               <label
                 htmlFor="email"
@@ -181,6 +199,8 @@ export default function RegisterPage() {
                 </p>
               )}
             </div>
+
+            {/* Password Field */}
             <div>
               <label
                 htmlFor="password"
@@ -202,6 +222,8 @@ export default function RegisterPage() {
                 </p>
               )}
             </div>
+
+            {/* Submit Button */}
             <motion.button
               type="submit"
               className="w-full py-3 bg-gradient-to-r from-[#16C784] to-[#2ECC71] text-white font-semibold rounded-lg shadow-md hover:from-[#2ECC71] hover:to-[#28A745] transition duration-300"
@@ -213,6 +235,7 @@ export default function RegisterPage() {
             </motion.button>
           </form>
 
+          {/* Redirect to Login */}
           <div className="mt-6 text-center text-[#A1A1AA]">
             Already have an account?{" "}
             <Link

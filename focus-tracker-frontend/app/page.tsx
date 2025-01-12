@@ -6,10 +6,6 @@ export default function Home() {
       <div className="max-w-4xl mx-auto">
         <PomodoroTimer />
       </div>
-      {/* <div className="grid gap-6 md:grid-cols-2">
-        <FocusDashboard />
-        <GamificationDisplay />
-      </div> */}
     </div>
   );
 }
