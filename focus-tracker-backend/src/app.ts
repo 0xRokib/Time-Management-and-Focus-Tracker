@@ -18,6 +18,10 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(httpLogger);
 
+app.get("/", (req, res) => {
+  res.json({ message: "Server is running!" });
+});
+
 app.use("/api/auth", authRouter);
 app.use("/api/focus", focusRouter);
 app.use("/api/metrics", metricsRouter);
