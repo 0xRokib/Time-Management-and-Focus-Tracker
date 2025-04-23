@@ -1,5 +1,5 @@
 import db from "../../config/db";
-import redisClient from "../../config/redis";
+import getRedisClient from "../../config/redis";
 
 // FocusSession interface definition
 export interface FocusSession {
@@ -26,8 +26,14 @@ export const logFocusSessionInDB = async (
       `focus-metrics:${userId}:week`, // Invalidate weekly metrics cache
     ];
 
-    for (const key of cacheKeys) {
-      await redisClient.del(key);
+    try {
+      const redisClient = await getRedisClient();
+      for (const key of cacheKeys) {
+        await redisClient.del(key);
+      }
+    } catch (redisError) {
+      console.error("Error clearing Redis cache:", redisError);
+      // Continue even if cache clearing fails
     }
 
     return result.rows[0];

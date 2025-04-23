@@ -1,13 +1,15 @@
+version: "3.8"
+
 services:
   backend:
     build: .
     ports:
-      - "5001:5001"
+      - "5001:5000"
     volumes:
-      - ./dist:/usr/src/app/dist
-      - /usr/src/app/node_modules
+      - .:/app
+      - /app/node_modules
     environment:
-      - PORT=5001
+      - NODE_ENV=production
     env_file:
       - .env # Ensure this points to your .env file with the correct variables
     depends_on:
@@ -24,7 +26,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
@@ -37,7 +39,7 @@ services:
     image: redis:latest
     container_name: redis_cache
     ports:
-      - "6379:6379"
+      - "6380:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

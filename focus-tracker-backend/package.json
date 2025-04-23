@@ -1,11 +1,12 @@
 {
   "name": "focus-tracker-backend",
   "version": "1.0.0",
-  "main": "server.ts",
+  "main": "src/server.ts",
   "scripts": {
     "dev": "nodemon src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "vercel-build": "npm run build"
   },
   "keywords": [],
   "author": "",
