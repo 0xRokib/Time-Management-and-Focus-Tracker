@@ -119,10 +119,20 @@ export function PomodoroTimer() {
 
   if (dayError) {
     return (
-      <div className="w-full h-full flex justify-center items-center text-white">
+      <div className="w-full h-full flex flex-col justify-center items-center text-white space-y-4">
         <h2 className="text-xl font-semibold text-gray-400">
-          Failed to load daily focus metrics. Please try again later.
+          Unable to load focus metrics
         </h2>
+        <p className="text-sm text-gray-500">
+          The server is taking too long to respond. This might be because there
+          is no data yet.
+        </p>
+        <Button
+          onClick={() => window.location.reload()}
+          className="mt-4 bg-[#16C784] hover:bg-[#2ECC71]"
+        >
+          Try Again
+        </Button>
       </div>
     );
   }
